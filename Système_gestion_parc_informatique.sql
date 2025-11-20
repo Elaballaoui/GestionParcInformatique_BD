@@ -223,7 +223,7 @@ CREATE TABLE Fournisseur (
     NomFournisseur VARCHAR(25),
     AdresseFournisseur VARCHAR(120),
     TelephoneFournisseur VARCHAR(15),
-    ContactPersonne VARCHAR(255)
+    ContactPersonne VARCHAR(30)
 );
 
 CREATE TABLE MarcheAppelOffre (
