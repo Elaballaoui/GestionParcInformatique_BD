@@ -39,7 +39,7 @@ CREATE TABLE Utilisateur (
 
 CREATE TABLE Personnelle (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    Matricule INTEGER UNIQUE NOT NULL,
+    Matricule VARCHAR(15) UNIQUE NOT NULL,
     Prenom VARCHAR(30) NOT NULL,
     Nom VARCHAR(30) NOT NULL,
     EtatPersonnelle VARCHAR(50) NOT NULL,
