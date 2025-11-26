@@ -103,7 +103,7 @@ CREATE TABLE TypeSiteLocal (
 
 CREATE TABLE SiteLocal (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    CodeSite INTEGER UNIQUE NOT NULL,
+    CodeSite VARCHAR(25) UNIQUE NOT NULL,
     NomSiteLocal VARCHAR(35) NOT NULL,
     IdTypeSiteLocal INTEGER,
     IdProvince INTEGER,
@@ -122,7 +122,7 @@ CREATE TABLE NumeroBureau (
 
 CREATE TABLE NumeroEtage (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    NumeroEtage VARCHAR(15) UNIQUE NOT NULL
+    NumeroEtage VARCHAR(20) UNIQUE NOT NULL
 );
 -- =========================
 -- LISTE DES MATERIELS
