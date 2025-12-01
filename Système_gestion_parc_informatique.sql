@@ -134,7 +134,9 @@ CREATE TABLE LivraisonStock (
     QuantiteLivraison INTEGER CHECK (QuantiteLivraison > 0),
     DateLivraison DATE NOT NULL,
     ReferenceLivraison VARCHAR(25) NOT NULL,
+    IdMarcheAppelOffre INTEGER,
     IdMateriel INTEGER,
+    FOREIGN KEY (IdMarcheAppelOffre) REFERENCES MarcheAppelOffre(Id),
     FOREIGN KEY (IdMateriel) REFERENCES Materiel(Id)
 );
 
