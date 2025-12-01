@@ -24,9 +24,7 @@ CREATE TABLE RolePermission (
 
 CREATE TABLE Utilisateur (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    Email VARCHAR(30) UNIQUE NOT NULL,
     MotDePasse VARCHAR(8) NOT NULL,
-    EtatUtilisateur VARCHAR(50) NOT NULL,
     IdInformationPersonnelle INTEGER,
     IdRole INTEGER,
     FOREIGN KEY (IdInformationPersonnelle) REFERENCES Personnelle(Id),
@@ -40,17 +38,11 @@ CREATE TABLE Utilisateur (
 CREATE TABLE Personnelle (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     Matricule VARCHAR(15) UNIQUE NOT NULL,
-    Prenom VARCHAR(30) NOT NULL,
     Nom VARCHAR(30) NOT NULL,
-    EtatPersonnelle VARCHAR(50) NOT NULL,
-    IdDirection INTEGER,
-    IdProvince INTEGER,
-    IdSiteLocal INTEGER,
-    IdNumeroBureau INTEGER,
-    FOREIGN KEY (IdDirection) REFERENCES Direction(Id),
-    FOREIGN KEY (IdProvince) REFERENCES Province(Id),
-    FOREIGN KEY (IdSiteLocal) REFERENCES SiteLocal(Id),
-    FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
+    Prenom VARCHAR(30) NOT NULL,
+    EtatAdministratif VARCHAR(50) NOT NULL,
+    Email VARCHAR(30) UNIQUE NOT NULL,
+    NTelephone VARCHAR(15) NOT NULL,
 );
 
 -- =========================
@@ -60,10 +52,6 @@ CREATE TABLE Personnelle (
 CREATE TABLE Direction (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomDirection VARCHAR(60) NOT NULL,
-    IdProvince INTEGER,
-    IdSiteLocal INTEGER,
-    FOREIGN KEY (IdProvince) REFERENCES Province(Id),
-    FOREIGN KEY (IdSiteLocal) REFERENCES SiteLocal(Id)
 );
 
 CREATE TABLE Departement (
@@ -96,27 +84,27 @@ CREATE TABLE Province (
     NomProvince VARCHAR(25) NOT NULL
 );
 
-CREATE TABLE TypeSiteLocal (
+CREATE TABLE TypeSite (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomTypeSite VARCHAR(25) NOT NULL
 );
 
-CREATE TABLE SiteLocal (
+CREATE TABLE ListeSite (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     CodeSite VARCHAR(25) UNIQUE NOT NULL,
-    NomSiteLocal VARCHAR(35) NOT NULL,
-    IdTypeSiteLocal INTEGER,
+    NomSite VARCHAR(35) NOT NULL,
+    IdTypeSite INTEGER,
     IdProvince INTEGER,
     FOREIGN KEY (IdProvince) REFERENCES Province(Id),
-    FOREIGN KEY (IdTypeSiteLocal) REFERENCES TypeSiteLocal(Id)
+    FOREIGN KEY (IdTypeSite) REFERENCES TypeSite(Id)
 );
 
 CREATE TABLE NumeroBureau (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NumBureau VARCHAR(15) NOT NULL,
     IdNumeroEtage INTEGER,
-    IdSiteLocal INTEGER,
-    FOREIGN KEY (IdSiteLocal) REFERENCES SiteLocal(Id),
+    IdListeSite INTEGER,
+    FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
     FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id)
 );
 
@@ -156,15 +144,17 @@ CREATE TABLE LivraisonStock (
 
 CREATE TABLE AffectationMateriel (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    DateDebut DATE NOT NULL,
-    DateFin DATE,
+    DateAffectation DATE NOT NULL,
+    DateCloture DATE,
     IdInformationPersonnelle INTEGER,
     IdListeMateriel INTEGER,
     IdDirection INTEGER,
     IdDepartement INTEGER,
     IdDivision INTEGER,
     IdService INTEGER,
-    IdSiteLocal INTEGER,
+    IdProvince INTEGER,
+    IdListeSite INTEGER,
+    IdNumeroEtage INTEGER,
     IdNumeroBureau INTEGER,
     FOREIGN KEY (IdInformationPersonnelle) REFERENCES Personnelle(Id),
     FOREIGN KEY (IdListeMateriel) REFERENCES ListeMateriel(Id),
@@ -172,7 +162,9 @@ CREATE TABLE AffectationMateriel (
     FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
     FOREIGN KEY (IdDivision) REFERENCES Division(Id),
     FOREIGN KEY (IdService) REFERENCES Service(Id),
-    FOREIGN KEY (IdSiteLocal) REFERENCES SiteLocal(Id),
+    FOREIGN KEY (IdProvince) REFERENCES Province(Id),
+    FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
+    FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id),
     FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
 );
 
@@ -180,35 +172,41 @@ CREATE TABLE AffectationMateriel (
 -- RESSOURCES MATERIELS
 -- =========================
 
-CREATE TABLE MaterielCategorie (
+CREATE TABLE Categorie (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
     NomCategorie VARCHAR(55) NOT NULL
 );
  
-CREATE TABLE MaterielMarque (
+CREATE TABLE Marque (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
     NomMarque VARCHAR(25) NOT NULL
 );
 
-CREATE TABLE MaterielModele (
+CREATE TABLE Modele (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
     NomModele VARCHAR(65) NOT NULL,
-    IdMaterielMarque INTEGER,
-    FOREIGN KEY (IdMaterielMarque) REFERENCES MaterielMarque(Id)
+    IdMarque INTEGER,
+    IdMateriel INTEGER,
+    FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
+    FOREIGN KEY (IdMateriel) REFERENCES Materiel(Id)
 );
 
 CREATE TABLE Materiel (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    MaterielDescription VARCHAR(120) NOT NULL,
-    MaterielQuantite INTEGER CHECK (MaterielQuantite > 0),
-    MaterielGarantie INTEGER CHECK (MaterielGarantie > 0),
+    MDescription VARCHAR(120) NOT NULL,
+    Quantite INTEGER CHECK (MaterielQuantite > 0),
+    Garantie INTEGER CHECK (MaterielGarantie > 0),
     PrixUnitaire DECIMAL(4,2) CHECK (PrixUnitaire > 0),
-    IdMaterielCategorie INTEGER,
-    IdMarcheAppelOffre INTEGER,
-    IdMaterielModele INTEGER,
-    FOREIGN KEY (IdMaterielCategorie) REFERENCES MaterielCategorie(Id),
-    FOREIGN KEY (IdMarcheAppelOffre) REFERENCES MarcheAppelOffre(Id),
-    FOREIGN KEY (IdMaterielModele) REFERENCES MaterielModele(Id)
+    IdCategorie INTEGER,
+    IdMarque INTEGER,
+    IdModele INTEGER,
+    IdFournisseur INTEGER,
+    IdListeMarche INTEGER,
+    FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
+    FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
+    FOREIGN KEY (IdModele) REFERENCES Modele(Id),
+    FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
+    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
 
 -- =========================
@@ -223,7 +221,7 @@ CREATE TABLE Fournisseur (
     ContactPersonne VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE MarcheAppelOffre (
+CREATE TABLE ListeMarche (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
     TitreMarche VARCHAR(70) NOT NULL,
     NumeroMarche VARCHAR(20) NOT NULL,
@@ -241,7 +239,7 @@ CREATE TABLE Facture (
     TauxTVA INTEGER NOT NULL,
     MontantTTC DECIMAL(8,2) CHECK (MontantTTC > 0),
     IdFournisseur INTEGER,
-    IdMarcheAppelOffre INTEGER,
+    IdListeMarche INTEGER,
     FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
-    FOREIGN KEY (IdMarcheAppelOffre) REFERENCES MarcheAppelOffre(Id)
+    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
