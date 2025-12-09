@@ -2,12 +2,6 @@
 -- INFORMATION DES UTILISATEURS
 -- =========================
 
-CREATE TABLE Role (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomRole VARCHAR(30) UNIQUE NOT NULL,
-    DescriptionRole VARCHAR(50) NOT NULL
-);
-
 CREATE TABLE Permission (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomPermission VARCHAR(30) UNIQUE NOT NULL,
@@ -20,6 +14,20 @@ CREATE TABLE RolePermission (
     IdPermission INTEGER,
     FOREIGN KEY (IdRole) REFERENCES Role(Id),
     FOREIGN KEY (IdPermission) REFERENCES Permission(Id)
+);
+
+CREATE TABLE Role (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomRole VARCHAR(30) UNIQUE NOT NULL,
+    DescriptionRole VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE RoleUtilisateur (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    IdRole INTEGER,
+    IdUtilisateur INTEGER,
+    FOREIGN KEY (IdRole) REFERENCES Role(Id),
+    FOREIGN KEY (IdUtilisateur) REFERENCES Utilisateur(Id)
 );
 
 CREATE TABLE Utilisateur (
@@ -65,13 +73,17 @@ CREATE TABLE Division (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomDivision VARCHAR(60) NOT NULL,
     IdDepartement INTEGER,
-    FOREIGN KEY (IdDepartement) REFERENCES Departement(Id)
+    IdDirection INTEGER,
+    FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
+    FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
 );
 
 CREATE TABLE Service (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomService VARCHAR(60) NOT NULL,
+    IdDirection INTEGER,
     IdDivision INTEGER,
+    FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
     FOREIGN KEY (IdDivision) REFERENCES Division(Id)
 );
 
@@ -112,33 +124,6 @@ CREATE TABLE NumeroEtage (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NumeroEtage VARCHAR(20) UNIQUE NOT NULL
 );
--- =========================
--- LISTE DES MATERIELS
--- =========================
-
-CREATE TABLE ListeMateriel (
-    Id INT PRIMARY KEY AUTO_INCREMENT, 
-    NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
-    NumeroInventaire VARCHAR(8) NOT NULL,
-    EtatMateriel VARCHAR(25) NOT NULL,
-    IdLivraisonStock INTEGER,
-    FOREIGN KEY (IdLivraisonStock) REFERENCES LivraisonStock(Id)
-);
-
--- =========================
--- LIVRAISON & STOCK
--- =========================
-
-CREATE TABLE LivraisonStock (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    QuantiteLivraison INTEGER CHECK (QuantiteLivraison > 0),
-    DateLivraison DATE NOT NULL,
-    ReferenceLivraison VARCHAR(25) NOT NULL,
-    IdMarcheAppelOffre INTEGER,
-    IdMateriel INTEGER,
-    FOREIGN KEY (IdMarcheAppelOffre) REFERENCES MarcheAppelOffre(Id),
-    FOREIGN KEY (IdMateriel) REFERENCES Materiel(Id)
-);
 
 -- =========================
 -- AFFECTATION
@@ -171,12 +156,47 @@ CREATE TABLE AffectationMateriel (
 );
 
 -- =========================
+-- LISTE DES MATERIELS
+-- =========================
+
+CREATE TABLE ListeMateriel (
+    Id INT PRIMARY KEY AUTO_INCREMENT, 
+    NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
+    NumeroInventaire VARCHAR(8) NOT NULL,
+    EtatMateriel VARCHAR(25) NOT NULL,
+    IdLivraisonStock INTEGER,
+    FOREIGN KEY (IdLivraisonStock) REFERENCES LivraisonStock(Id)
+);
+
+-- =========================
+-- LIVRAISON & STOCK
+-- =========================
+
+CREATE TABLE LivraisonStock (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    QuantiteLivraison INTEGER CHECK (QuantiteLivraison > 0),
+    DateLivraison DATE NOT NULL,
+    ReferenceLivraison VARCHAR(25) NOT NULL,
+    IdListeMarche INTEGER,
+    IdMateriel INTEGER,
+    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id),
+    FOREIGN KEY (IdMateriel) REFERENCES Materiel(Id)
+);
+
+-- =========================
 -- RESSOURCES MATERIELS
 -- =========================
 
 CREATE TABLE Categorie (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
     NomCategorie VARCHAR(55) NOT NULL
+);
+
+CREATE TABLE NomMateriel (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    Nom VARCHAR(55) NOT NULL,
+    IdCategorie INTEGER,
+    FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id)
 );
  
 CREATE TABLE Marque (
