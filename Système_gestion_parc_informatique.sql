@@ -46,9 +46,22 @@ CREATE TABLE Personnelle (
     Matricule VARCHAR(15) UNIQUE,
     Nom VARCHAR(30),
     Prenom VARCHAR(30),
-    EtatAdministratif VARCHAR(50),
     Email VARCHAR(30) UNIQUE,
     NTelephone VARCHAR(15) UNIQUE,
+    IdEtatAdministratif INTEGER,
+    IdGrade INTEGER,
+    FOREIGN KEY (IdEtatAdministratif) REFERENCES EtatAdministratif(Id),
+    FOREIGN KEY (IdGrade) REFERENCES Grade(Id)
+);
+
+CREATE TABLE Grade (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    NomGrade VARCHAR(50) UNIQUE
+);
+
+CREATE TABLE EtatAdministratif (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    NomEtatAdministratif VARCHAR(50) UNIQUE
 );
 
 -- =========================
@@ -71,18 +84,18 @@ CREATE TABLE Division (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomDivision VARCHAR(60),
     IdDepartement INTEGER,
-    IdDirection INTEGER,
-    FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
-    FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
+    -- IdDirection INTEGER,
+    FOREIGN KEY (IdDepartement) REFERENCES Departement(Id)
+    -- FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
 );
 
 CREATE TABLE Service (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomService VARCHAR(60),
     IdDivision INTEGER,
-    IdDirection INTEGER,
-    FOREIGN KEY (IdDivision) REFERENCES Division(Id),
-    FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
+    -- IdDirection INTEGER,
+    FOREIGN KEY (IdDivision) REFERENCES Division(Id)
+    -- FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
 );
 
 -- =========================
@@ -91,12 +104,12 @@ CREATE TABLE Service (
 
 CREATE TABLE Province (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    NomProvince VARCHAR(25)
+    NomProvince VARCHAR(25) UNIQUE
 );
 
 CREATE TABLE TypeSite (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    NomTypeSite VARCHAR(25)
+    NomTypeSite VARCHAR(25) UNIQUE
 );
 
 CREATE TABLE ListeSite (
@@ -175,9 +188,9 @@ CREATE TABLE LivraisonStock (
     QuantiteLivraison INTEGER CHECK (QuantiteLivraison > 0),
     DateLivraison DATE,
     ReferenceLivraison VARCHAR(25) UNIQUE,
-    IdListeMarche INTEGER,
+    -- IdListeMarche INTEGER,
     IdMateriel INTEGER,
-    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id),
+    -- FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
     FOREIGN KEY (IdMateriel) REFERENCES Materiel(Id)
 );
 
@@ -187,7 +200,7 @@ CREATE TABLE LivraisonStock (
 
 CREATE TABLE Categorie (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomCategorie VARCHAR(55)
+    NomCategorie VARCHAR(55) UNIQUE
 );
 
 CREATE TABLE NomMateriel (
@@ -199,17 +212,17 @@ CREATE TABLE NomMateriel (
 
 CREATE TABLE Marque (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomMarque VARCHAR(25)
+    NomMarque VARCHAR(25) UNIQUE
 );
 
 CREATE TABLE Modele (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomModele VARCHAR(65),
+    NomModele VARCHAR(65) UNIQUE,
     IdMarque INTEGER,
-    IdCategorie INTEGER,
+    -- IdCategorie INTEGER,
     IdNomMateriel INTEGER,
     FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
-    FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
+    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
     FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id)
 );
 
@@ -223,13 +236,13 @@ CREATE TABLE Materiel (
     IdNomMateriel INTEGER,
     IdMarque INTEGER,
     IdModele INTEGER,
-    IdFournisseur INTEGER,
+    -- IdFournisseur INTEGER,
     IdListeMarche INTEGER,
     FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id),
     FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
     FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
     FOREIGN KEY (IdModele) REFERENCES Modele(Id),
-    FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
+    -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
     FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
 
@@ -239,10 +252,10 @@ CREATE TABLE Materiel (
 
 CREATE TABLE Fournisseur (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomFournisseur VARCHAR(25),
-    Adresse VARCHAR(120),
-    Telephone VARCHAR(15),
-    ContactPersonne VARCHAR(30)
+    NomFournisseur VARCHAR(25) UNIQUE,
+    Adresse VARCHAR(120) UNIQUE,
+    Telephone VARCHAR(15) UNIQUE,
+    ContactPersonne VARCHAR(30) 
 );
 
 CREATE TABLE ListeMarche (
@@ -261,8 +274,8 @@ CREATE TABLE Facture (
     MontantHT DECIMAL(8,2) CHECK (MontantHT > 0),
     TauxTVA INTEGER CHECK (TauxTVA >= 0),
     MontantTTC DECIMAL(8,2) CHECK (MontantTTC > 0),
-    IdFournisseur INTEGER,
+    -- IdFournisseur INTEGER,
     IdListeMarche INTEGER,
-    FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
+    -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
     FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
