@@ -1,6 +1,6 @@
--- =========================
+-- ============================
 -- INFORMATION DES UTILISATEURS
--- =========================
+-- ============================
 
 CREATE TABLE Permission (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -31,6 +31,7 @@ CREATE TABLE RoleUtilisateur (
 CREATE TABLE Utilisateur (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     MotDePasse VARCHAR(8) NOT NULL,
+    EtatUtilisateur VARCHAR(15) UNIQUE NOT NULL,
     IdInformationPersonnelle INTEGER,
     IdRole INTEGER,
     FOREIGN KEY (IdInformationPersonnelle) REFERENCES Personnelle(Id),
@@ -48,10 +49,10 @@ CREATE TABLE Personnelle (
     Prenom VARCHAR(30),
     Email VARCHAR(30) UNIQUE,
     NTelephone VARCHAR(15) UNIQUE,
-    IdEtatAdministratif INTEGER,
     IdGrade INTEGER,
-    FOREIGN KEY (IdEtatAdministratif) REFERENCES EtatAdministratif(Id),
+    IdEtatAdministratif INTEGER,
     FOREIGN KEY (IdGrade) REFERENCES Grade(Id)
+    FOREIGN KEY (IdEtatAdministratif) REFERENCES EtatAdministratif(Id),
 );
 
 CREATE TABLE Grade (
@@ -70,7 +71,7 @@ CREATE TABLE EtatAdministratif (
 
 CREATE TABLE Direction (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    NomDirection VARCHAR(60)
+    NomDirection VARCHAR(60) UNIQUE
 );
 
 CREATE TABLE Departement (
@@ -84,18 +85,14 @@ CREATE TABLE Division (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomDivision VARCHAR(60),
     IdDepartement INTEGER,
-    -- IdDirection INTEGER,
     FOREIGN KEY (IdDepartement) REFERENCES Departement(Id)
-    -- FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
 );
 
 CREATE TABLE Service (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomService VARCHAR(60),
     IdDivision INTEGER,
-    -- IdDirection INTEGER,
     FOREIGN KEY (IdDivision) REFERENCES Division(Id)
-    -- FOREIGN KEY (IdDirection) REFERENCES Direction(Id)
 );
 
 -- =========================
@@ -115,7 +112,7 @@ CREATE TABLE TypeSite (
 CREATE TABLE ListeSite (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     CodeSite VARCHAR(25) UNIQUE,
-    NomSite VARCHAR(35),
+    NomSite VARCHAR(35) UNIQUE,
     IdTypeSite INTEGER,
     IdProvince INTEGER,
     FOREIGN KEY (IdProvince) REFERENCES Province(Id),
@@ -205,7 +202,7 @@ CREATE TABLE Categorie (
 
 CREATE TABLE NomMateriel (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    Nom VARCHAR(55),
+    NomMateriel VARCHAR(55) UNIQUE,
     IdCategorie INTEGER,
     FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id)
 );
@@ -228,26 +225,27 @@ CREATE TABLE Modele (
 
 CREATE TABLE Materiel (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    -- NomMateriel VARCHAR(55),
     MDescription VARCHAR(120),
     Quantite INTEGER CHECK (MaterielQuantite > 0),
     Garantie INTEGER CHECK (MaterielGarantie > 0),
     PrixUnitaire DECIMAL(4,2) CHECK (PrixUnitaire > 0),
-    IdCategorie INTEGER,
-    IdNomMateriel INTEGER,
-    IdMarque INTEGER,
+    -- IdCategorie INTEGER,
+    -- IdNomMateriel INTEGER,
+    -- IdMarque INTEGER,
     IdModele INTEGER,
     -- IdFournisseur INTEGER,
     IdListeMarche INTEGER,
-    FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id),
-    FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
-    FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
+    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id),
+    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
+    -- FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
     FOREIGN KEY (IdModele) REFERENCES Modele(Id),
     -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
     FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
 
 -- =========================
--- ACHAT & FOURNISSEURS
+-- MARCHES & FOURNISSEURS
 -- =========================
 
 CREATE TABLE Fournisseur (
