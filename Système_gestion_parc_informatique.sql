@@ -95,9 +95,9 @@ CREATE TABLE Service (
     FOREIGN KEY (IdDivision) REFERENCES Division(Id)
 );
 
--- =========================
--- SITES
--- =========================
+-- =============
+-- SITES LOCAUX
+-- =============
 
 CREATE TABLE Province (
     Id INT PRIMARY KEY AUTO_INCREMENT,
