@@ -44,7 +44,7 @@ CREATE TABLE Utilisateur (
 
 CREATE TABLE Personnelle (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    Matricule VARCHAR(15) UNIQUE,
+    Matricule VARCHAR(15) UNIQUE NOT NULL,
     Nom VARCHAR(30),
     Prenom VARCHAR(30),
     Email VARCHAR(30) UNIQUE,
@@ -71,7 +71,7 @@ CREATE TABLE EtatAdministratif (
 
 CREATE TABLE Direction (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    NomDirection VARCHAR(60) UNIQUE
+    NomDirection VARCHAR(60) UNIQUE NOT NULL
 );
 
 CREATE TABLE Departement (
@@ -139,41 +139,56 @@ CREATE TABLE NumeroEtage (
 
 CREATE TABLE AffectationMateriel (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    DateAffectation DATE,
+    DateAffectation DATE NOT NULL,
     DateCloture DATE,
-    IdInformationPersonnelle INTEGER,
-    IdListeMateriel INTEGER,
+    IdPersonnelle INTEGER,
+    IdChampPersoImmobi INTEGER,
     IdDirection INTEGER,
     IdDepartement INTEGER,
     IdDivision INTEGER,
     IdService INTEGER,
-    IdProvince INTEGER,
-    IdListeSite INTEGER,
-    IdNumeroEtage INTEGER,
+    -- IdProvince INTEGER,
+    -- IdListeSite INTEGER,
+    -- IdNumeroEtage INTEGER,
     IdNumeroBureau INTEGER,
-    FOREIGN KEY (IdInformationPersonnelle) REFERENCES Personnelle(Id),
-    FOREIGN KEY (IdListeMateriel) REFERENCES ListeMateriel(Id),
+    FOREIGN KEY (IdPersonnelle) REFERENCES Personnelle(Id),
+    FOREIGN KEY (IdChampPersoImmobi) REFERENCES ChampPersoImmobi(Id),
     FOREIGN KEY (IdDirection) REFERENCES Direction(Id),
     FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
     FOREIGN KEY (IdDivision) REFERENCES Division(Id),
     FOREIGN KEY (IdService) REFERENCES Service(Id),
-    FOREIGN KEY (IdProvince) REFERENCES Province(Id),
-    FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
-    FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id),
+    -- FOREIGN KEY (IdProvince) REFERENCES Province(Id),
+    -- FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
+    -- FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id),
     FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
 );
 
--- =========================
--- LISTE DES MATERIELS
--- =========================
+-- =============================
+-- IMMOBILISATION DES MATERIELS 
+-- =============================
 
-CREATE TABLE ListeMateriel (
-    Id INT PRIMARY KEY AUTO_INCREMENT, 
-    NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
-    NumeroInventaire VARCHAR(8) NOT NULL,
+-- CREATE TABLE ListeMateriel (
+--     Id INT PRIMARY KEY AUTO_INCREMENT, 
+--     NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
+--     NumeroInventaire VARCHAR(8) NOT NULL,
+--     EtatMateriel VARCHAR(25),
+--     IdLivraisonStock INTEGER,
+--     FOREIGN KEY (IdLivraisonStock) REFERENCES LivraisonStock(Id)
+-- );
+
+CREATE TABLE ImmobilisationMateriel (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
     EtatMateriel VARCHAR(25),
-    IdLivraisonStock INTEGER,
-    FOREIGN KEY (IdLivraisonStock) REFERENCES LivraisonStock(Id)
+    IdTypeMateriel INTEGER,
+    FOREIGN KEY (IdTypeMateriel) REFERENCES TypeMateriel(Id),
+);
+
+CREATE TABLE ChampPersoImmobi (
+    Id INT PRIMARY KEY AUTO_INCREMENT, 
+    libelle VARCHAR(50) UNIQUE NOT NULL,
+    valeur VARCHAR(8) UNIQUE NOT NULL,
+    IdImmobilisationMateriel INTEGER,
+    FOREIGN KEY (IdImmobilisationMateriel) REFERENCES ImmobilisationMateriel(Id)
 );
 
 -- =========================
@@ -186,26 +201,35 @@ CREATE TABLE LivraisonStock (
     DateLivraison DATE,
     ReferenceLivraison VARCHAR(25) UNIQUE,
     -- IdListeMarche INTEGER,
-    IdMateriel INTEGER,
+    IdListMateriel INTEGER,
     -- FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
-    FOREIGN KEY (IdMateriel) REFERENCES Materiel(Id)
+    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id)
 );
 
 -- =========================
 -- RESSOURCES MATERIELS
 -- =========================
 
-CREATE TABLE Categorie (
+-- CREATE TABLE Categorie (
+--     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+--     NomCategorie VARCHAR(55) UNIQUE
+-- );
+
+CREATE TABLE TypeMateriel (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomCategorie VARCHAR(55) UNIQUE
+    NomTypeMateriel VARCHAR(55) UNIQUE,
+    IdListMateriel INTEGER,
+    IdModele INTEGER,
+    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id),
+    FOREIGN KEY (IdModele) REFERENCES Modele(Id)
 );
 
-CREATE TABLE NomMateriel (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomMateriel VARCHAR(55) UNIQUE,
-    IdCategorie INTEGER,
-    FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id)
-);
+-- CREATE TABLE NomMateriel (
+--     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+--     NomMateriel VARCHAR(55) UNIQUE,
+--     IdCategorie INTEGER,
+--     FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id)
+-- );
 
 CREATE TABLE Marque (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -217,29 +241,29 @@ CREATE TABLE Modele (
     NomModele VARCHAR(65) UNIQUE,
     IdMarque INTEGER,
     -- IdCategorie INTEGER,
-    IdNomMateriel INTEGER,
+    -- IdNomMateriel INTEGER,
     FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
     -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
-    FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id)
+    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id)
 );
 
-CREATE TABLE Materiel (
+CREATE TABLE ListMateriel (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    -- NomMateriel VARCHAR(55),
-    MDescription VARCHAR(120),
+    NomMateriel VARCHAR(55),
+    Caracteristique VARCHAR(120),
     Quantite INTEGER CHECK (MaterielQuantite > 0),
     Garantie INTEGER CHECK (MaterielGarantie > 0),
-    PrixUnitaire DECIMAL(4,2) CHECK (PrixUnitaire > 0),
+    PrixUnitaire DECIMAL(6,2) CHECK (PrixUnitaire > 0),
     -- IdCategorie INTEGER,
     -- IdNomMateriel INTEGER,
     -- IdMarque INTEGER,
-    IdModele INTEGER,
+    -- IdModele INTEGER,
     -- IdFournisseur INTEGER,
     IdListeMarche INTEGER,
     -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id),
     -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
     -- FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
-    FOREIGN KEY (IdModele) REFERENCES Modele(Id),
+    -- FOREIGN KEY (IdModele) REFERENCES Modele(Id),
     -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
     FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
