@@ -197,8 +197,8 @@ CREATE TABLE ImmobilisationMateriel (
 
 CREATE TABLE ChampPersoImmobi (
     Id INT PRIMARY KEY AUTO_INCREMENT, 
-    libelle VARCHAR(50) UNIQUE NOT NULL,
-    valeur VARCHAR(8) UNIQUE NOT NULL,
+    NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
+    NumeroInvantaire VARCHAR(8) UNIQUE NOT NULL,
     IdImmobilisationMateriel INTEGER,
     FOREIGN KEY (IdImmobilisationMateriel) REFERENCES ImmobilisationMateriel(Id)
 );
