@@ -38,9 +38,9 @@ CREATE TABLE Utilisateur (
     FOREIGN KEY (IdRole) REFERENCES Role(Id)
 );
 
--- =========================
--- PERSONNEL
--- =========================
+-- ====================
+-- GESTION PERSONNEL
+-- ====================
 
 CREATE TABLE Personnelle (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -51,8 +51,18 @@ CREATE TABLE Personnelle (
     NTelephone VARCHAR(15) UNIQUE,
     IdGrade INTEGER,
     IdEtatAdministratif INTEGER,
-    FOREIGN KEY (IdGrade) REFERENCES Grade(Id)
+    IdNumeroBureau INTEGER,
+    IdDirection INTEGER,
+    IdDepartement INTEGER,
+    IdDivision INTEGER,
+    IdService INTEGER,
+    FOREIGN KEY (IdGrade) REFERENCES Grade(Id),
     FOREIGN KEY (IdEtatAdministratif) REFERENCES EtatAdministratif(Id),
+    FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id),
+    FOREIGN KEY (IdDirection) REFERENCES Direction(Id),
+    FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
+    FOREIGN KEY (IdDivision) REFERENCES Division(Id),
+    FOREIGN KEY (IdService) REFERENCES Service(Id)
 );
 
 CREATE TABLE Grade (
@@ -71,7 +81,9 @@ CREATE TABLE EtatAdministratif (
 
 CREATE TABLE Direction (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    NomDirection VARCHAR(60) UNIQUE NOT NULL
+    NomDirection VARCHAR(60) UNIQUE NOT NULL,
+    IdListeSite INTEGER,
+    FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id)
 );
 
 CREATE TABLE Departement (
@@ -143,24 +155,24 @@ CREATE TABLE AffectationMateriel (
     DateCloture DATE,
     IdPersonnelle INTEGER,
     IdChampPersoImmobi INTEGER,
-    IdDirection INTEGER,
-    IdDepartement INTEGER,
-    IdDivision INTEGER,
-    IdService INTEGER,
+    -- IdDirection INTEGER,
+    -- IdDepartement INTEGER,
+    -- IdDivision INTEGER,
+    -- IdService INTEGER,
     -- IdProvince INTEGER,
     -- IdListeSite INTEGER,
     -- IdNumeroEtage INTEGER,
-    IdNumeroBureau INTEGER,
+    -- IdNumeroBureau INTEGER,
     FOREIGN KEY (IdPersonnelle) REFERENCES Personnelle(Id),
     FOREIGN KEY (IdChampPersoImmobi) REFERENCES ChampPersoImmobi(Id),
-    FOREIGN KEY (IdDirection) REFERENCES Direction(Id),
-    FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
-    FOREIGN KEY (IdDivision) REFERENCES Division(Id),
-    FOREIGN KEY (IdService) REFERENCES Service(Id),
+    -- FOREIGN KEY (IdDirection) REFERENCES Direction(Id),
+    -- FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
+    -- FOREIGN KEY (IdDivision) REFERENCES Division(Id),
+    -- FOREIGN KEY (IdService) REFERENCES Service(Id),
     -- FOREIGN KEY (IdProvince) REFERENCES Province(Id),
     -- FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
     -- FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id),
-    FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
+    -- FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
 );
 
 -- =============================
@@ -200,9 +212,9 @@ CREATE TABLE LivraisonStock (
     QuantiteLivraison INTEGER CHECK (QuantiteLivraison > 0),
     DateLivraison DATE,
     ReferenceLivraison VARCHAR(25) UNIQUE,
-    -- IdListeMarche INTEGER,
+    IdListeMarche INTEGER,
     IdListMateriel INTEGER,
-    -- FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
+    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
     FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id)
 );
 
