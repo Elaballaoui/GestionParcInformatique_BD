@@ -1,6 +1,6 @@
--- ============================
--- INFORMATION DES UTILISATEURS
--- ============================
+-- ====================================
+-- MODULE:INFORMATION DES UTILISATEURS
+-- ====================================
 
 CREATE TABLE Permission (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -38,9 +38,9 @@ CREATE TABLE Utilisateur (
     FOREIGN KEY (IdRole) REFERENCES Role(Id)
 );
 
--- ====================
--- GESTION PERSONNEL
--- ====================
+-- =========================
+-- MODULE: GESTION PERSONNEL
+-- =========================
 
 CREATE TABLE Personnelle (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -75,9 +75,9 @@ CREATE TABLE EtatAdministratif (
     NomEtatAdministratif VARCHAR(50) UNIQUE
 );
 
--- =========================
--- ECHELLE ADMINISTRATIVE
--- =========================
+-- ==============================
+-- MODULE: ECHELLE ADMINISTRATIVE
+-- ==============================
 
 CREATE TABLE Direction (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -107,9 +107,9 @@ CREATE TABLE Service (
     FOREIGN KEY (IdDivision) REFERENCES Division(Id)
 );
 
--- =============
--- SITES LOCAUX
--- =============
+-- =====================
+-- MODULE: SITES LOCAUX
+-- =====================
 
 CREATE TABLE Province (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -145,9 +145,9 @@ CREATE TABLE NumeroEtage (
     NumeroEtage VARCHAR(20) UNIQUE
 );
 
--- =========================
--- AFFECTATION
--- =========================
+-- ====================
+-- MODULE: AFFECTATION
+-- ====================
 
 CREATE TABLE AffectationMateriel (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -175,9 +175,9 @@ CREATE TABLE AffectationMateriel (
     -- FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
 );
 
--- =============================
--- IMMOBILISATION DES MATERIELS 
--- =============================
+-- =====================================
+-- MODULE: IMMOBILISATION DES MATERIELS 
+-- =====================================
 
 -- CREATE TABLE ListeMateriel (
 --     Id INT PRIMARY KEY AUTO_INCREMENT, 
@@ -203,9 +203,9 @@ CREATE TABLE ChampPersoImmobi (
     FOREIGN KEY (IdImmobilisationMateriel) REFERENCES ImmobilisationMateriel(Id)
 );
 
--- =========================
--- LIVRAISON & STOCK
--- =========================
+-- ==========================
+-- MODULE: LIVRAISON & STOCK
+-- ==========================
 
 CREATE TABLE LivraisonStock (
     Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -218,9 +218,9 @@ CREATE TABLE LivraisonStock (
     FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id)
 );
 
--- =========================
--- RESSOURCES MATERIELS
--- =========================
+-- =============================
+-- MODULE: RESSOURCES MATERIELS
+-- =============================
 
 -- CREATE TABLE Categorie (
 --     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -280,9 +280,9 @@ CREATE TABLE ListMateriel (
     FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
 
--- =========================
--- MARCHES & FOURNISSEURS
--- =========================
+-- ==============================
+-- MODULE: MARCHES & FOURNISSEURS
+-- ==============================
 
 CREATE TABLE Fournisseur (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
