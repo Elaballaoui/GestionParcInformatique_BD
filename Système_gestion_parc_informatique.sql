@@ -1,41 +1,74 @@
--- ====================================
--- MODULE:INFORMATION DES UTILISATEURS
--- ====================================
+-- ====================
+-- MODULE: AFFECTATION
+-- ====================
 
-CREATE TABLE Permission (
+CREATE TABLE AffectationMateriel (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    NomPermission VARCHAR(30) UNIQUE NOT NULL
+    DateAffectation DATE NOT NULL,
+    DateCloture DATE,
+    IdPersonnelle INTEGER,
+    IdChampPersoImmobi INTEGER,
+    IdDirection INTEGER,
+    IdDepartement INTEGER,
+    IdDivision INTEGER,
+    IdService INTEGER,
+    IdProvince INTEGER,
+    IdListeSite INTEGER,
+    IdNumeroEtage INTEGER,
+    IdNumeroBureau INTEGER,
+    FOREIGN KEY (IdPersonnelle) REFERENCES Personnelle(Id),
+    FOREIGN KEY (IdChampPersoImmobi) REFERENCES ChampPersoImmobi(Id),
+    FOREIGN KEY (IdDirection) REFERENCES Direction(Id),
+    FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
+    FOREIGN KEY (IdDivision) REFERENCES Division(Id),
+    FOREIGN KEY (IdService) REFERENCES Service(Id),
+    FOREIGN KEY (IdProvince) REFERENCES Province(Id),
+    FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
+    FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id),
+    FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
 );
 
-CREATE TABLE RolePermission (
+-- =====================================
+-- MODULE: IMMOBILISATION DES MATERIELS 
+-- =====================================
+
+-- CREATE TABLE ListeMateriel (
+--     Id INT PRIMARY KEY AUTO_INCREMENT, 
+--     NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
+--     NumeroInventaire VARCHAR(8) NOT NULL,
+--     EtatMateriel VARCHAR(25),
+--     IdLivraisonStock INTEGER,
+--     FOREIGN KEY (IdLivraisonStock) REFERENCES LivraisonStock(Id)
+-- );
+
+CREATE TABLE ImmobilisationMateriel (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    IdRole INTEGER,
-    IdPermission INTEGER,
-    FOREIGN KEY (IdRole) REFERENCES Role(Id),
-    FOREIGN KEY (IdPermission) REFERENCES Permission(Id)
+    EtatMateriel VARCHAR(25),
+    IdTypeMateriel INTEGER,
+    FOREIGN KEY (IdTypeMateriel) REFERENCES TypeMateriel(Id),
 );
 
-CREATE TABLE Role (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomRole VARCHAR(30) UNIQUE NOT NULL
+CREATE TABLE ChampPersoImmobi (
+    Id INT PRIMARY KEY AUTO_INCREMENT, 
+    NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
+    NumeroInvantaire VARCHAR(8) UNIQUE NOT NULL,
+    IdImmobilisationMateriel INTEGER,
+    FOREIGN KEY (IdImmobilisationMateriel) REFERENCES ImmobilisationMateriel(Id)
 );
 
-CREATE TABLE RoleUtilisateur (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    IdRole INTEGER,
-    IdUtilisateur INTEGER,
-    FOREIGN KEY (IdRole) REFERENCES Role(Id),
-    FOREIGN KEY (IdUtilisateur) REFERENCES Utilisateur(Id)
-);
+-- ===========================
+-- MODULE: LIVRAISON MATERIEL
+-- ===========================
 
-CREATE TABLE Utilisateur (
+CREATE TABLE LivraisonMateriel (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    MotDePasse VARCHAR(8) NOT NULL,
-    EtatUtilisateur VARCHAR(15) UNIQUE NOT NULL,
-    IdInformationPersonnelle INTEGER,
-    IdRole INTEGER,
-    FOREIGN KEY (IdInformationPersonnelle) REFERENCES Personnelle(Id),
-    FOREIGN KEY (IdRole) REFERENCES Role(Id)
+    QuantiteLivraison INTEGER CHECK (QuantiteLivraison > 0),
+    DateLivraison DATE,
+    ReferenceLivraison VARCHAR(25) UNIQUE,
+    IdListeMarche INTEGER,
+    IdListMateriel INTEGER,
+    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
+    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id)
 );
 
 -- =========================
@@ -73,6 +106,108 @@ CREATE TABLE Grade (
 CREATE TABLE EtatAdministratif (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NomEtatAdministratif VARCHAR(50) UNIQUE
+);
+
+-- ============================
+-- MODULE: Gestion UTILISATEUR
+-- ============================
+
+CREATE TABLE Permission (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    NomPermission VARCHAR(30) UNIQUE NOT NULL
+);
+
+CREATE TABLE RolePermission (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    IdRole INTEGER,
+    IdPermission INTEGER,
+    FOREIGN KEY (IdRole) REFERENCES Role(Id),
+    FOREIGN KEY (IdPermission) REFERENCES Permission(Id)
+);
+
+CREATE TABLE Role (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomRole VARCHAR(30) UNIQUE NOT NULL
+);
+
+CREATE TABLE RoleUtilisateur (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    IdRole INTEGER,
+    IdUtilisateur INTEGER,
+    FOREIGN KEY (IdRole) REFERENCES Role(Id),
+    FOREIGN KEY (IdUtilisateur) REFERENCES Utilisateur(Id)
+);
+
+CREATE TABLE Utilisateur (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    MotDePasse VARCHAR(8) NOT NULL,
+    EtatUtilisateur VARCHAR(15) UNIQUE NOT NULL,
+    IdInformationPersonnelle INTEGER,
+    IdRole INTEGER,
+    FOREIGN KEY (IdInformationPersonnelle) REFERENCES Personnelle(Id),
+    FOREIGN KEY (IdRole) REFERENCES Role(Id)
+);
+
+-- =============================
+-- MODULE: RESSOURCES MATERIELS
+-- =============================
+
+-- CREATE TABLE Categorie (
+--     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+--     NomCategorie VARCHAR(55) UNIQUE
+-- );
+
+CREATE TABLE TypeMateriel (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomTypeMateriel VARCHAR(55) UNIQUE,
+    IdListMateriel INTEGER,
+    IdModele INTEGER,
+    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id),
+    FOREIGN KEY (IdModele) REFERENCES Modele(Id)
+);
+
+-- CREATE TABLE NomMateriel (
+--     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+--     NomMateriel VARCHAR(55) UNIQUE,
+--     IdCategorie INTEGER,
+--     FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id)
+-- );
+
+CREATE TABLE Marque (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomMarque VARCHAR(25) UNIQUE
+);
+
+CREATE TABLE Modele (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomModele VARCHAR(65) UNIQUE,
+    IdMarque INTEGER,
+    -- IdCategorie INTEGER,
+    -- IdNomMateriel INTEGER,
+    FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
+    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
+    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id)
+);
+
+CREATE TABLE ListMateriel (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomMateriel VARCHAR(55),
+    Caracteristique VARCHAR(120),
+    Quantite INTEGER CHECK (Quantite > 0),
+    Garantie INTEGER CHECK (Garantie > 0),
+    PrixUnitaire DECIMAL(6,2) CHECK (PrixUnitaire > 0),
+    -- IdCategorie INTEGER,
+    -- IdNomMateriel INTEGER,
+    -- IdMarque INTEGER,
+    -- IdModele INTEGER,
+    -- IdFournisseur INTEGER,
+    IdListeMarche INTEGER,
+    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id),
+    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
+    -- FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
+    -- FOREIGN KEY (IdModele) REFERENCES Modele(Id),
+    -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
+    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
 
 -- ==============================
@@ -131,6 +266,11 @@ CREATE TABLE ListeSite (
     FOREIGN KEY (IdTypeSite) REFERENCES TypeSite(Id)
 );
 
+CREATE TABLE NumeroEtage (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    NumeroEtage VARCHAR(20) UNIQUE
+);
+
 CREATE TABLE NumeroBureau (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     NumBureau VARCHAR(15),
@@ -138,146 +278,6 @@ CREATE TABLE NumeroBureau (
     IdListeSite INTEGER,
     FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
     FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id)
-);
-
-CREATE TABLE NumeroEtage (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    NumeroEtage VARCHAR(20) UNIQUE
-);
-
--- ====================
--- MODULE: AFFECTATION
--- ====================
-
-CREATE TABLE AffectationMateriel (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    DateAffectation DATE NOT NULL,
-    DateCloture DATE,
-    IdPersonnelle INTEGER,
-    IdChampPersoImmobi INTEGER,
-    -- IdDirection INTEGER,
-    -- IdDepartement INTEGER,
-    -- IdDivision INTEGER,
-    -- IdService INTEGER,
-    -- IdProvince INTEGER,
-    -- IdListeSite INTEGER,
-    -- IdNumeroEtage INTEGER,
-    -- IdNumeroBureau INTEGER,
-    FOREIGN KEY (IdPersonnelle) REFERENCES Personnelle(Id),
-    FOREIGN KEY (IdChampPersoImmobi) REFERENCES ChampPersoImmobi(Id),
-    -- FOREIGN KEY (IdDirection) REFERENCES Direction(Id),
-    -- FOREIGN KEY (IdDepartement) REFERENCES Departement(Id),
-    -- FOREIGN KEY (IdDivision) REFERENCES Division(Id),
-    -- FOREIGN KEY (IdService) REFERENCES Service(Id),
-    -- FOREIGN KEY (IdProvince) REFERENCES Province(Id),
-    -- FOREIGN KEY (IdListeSite) REFERENCES ListeSite(Id),
-    -- FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id),
-    -- FOREIGN KEY (IdNumeroBureau) REFERENCES NumeroBureau(Id)
-);
-
--- =====================================
--- MODULE: IMMOBILISATION DES MATERIELS 
--- =====================================
-
--- CREATE TABLE ListeMateriel (
---     Id INT PRIMARY KEY AUTO_INCREMENT, 
---     NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
---     NumeroInventaire VARCHAR(8) NOT NULL,
---     EtatMateriel VARCHAR(25),
---     IdLivraisonStock INTEGER,
---     FOREIGN KEY (IdLivraisonStock) REFERENCES LivraisonStock(Id)
--- );
-
-CREATE TABLE ImmobilisationMateriel (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    EtatMateriel VARCHAR(25),
-    IdTypeMateriel INTEGER,
-    FOREIGN KEY (IdTypeMateriel) REFERENCES TypeMateriel(Id),
-);
-
-CREATE TABLE ChampPersoImmobi (
-    Id INT PRIMARY KEY AUTO_INCREMENT, 
-    NumeroSerie VARCHAR(50) UNIQUE NOT NULL,
-    NumeroInvantaire VARCHAR(8) UNIQUE NOT NULL,
-    IdImmobilisationMateriel INTEGER,
-    FOREIGN KEY (IdImmobilisationMateriel) REFERENCES ImmobilisationMateriel(Id)
-);
-
--- ==========================
--- MODULE: LIVRAISON & STOCK
--- ==========================
-
-CREATE TABLE LivraisonStock (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    QuantiteLivraison INTEGER CHECK (QuantiteLivraison > 0),
-    DateLivraison DATE,
-    ReferenceLivraison VARCHAR(25) UNIQUE,
-    IdListeMarche INTEGER,
-    IdListMateriel INTEGER,
-    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
-    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id)
-);
-
--- =============================
--- MODULE: RESSOURCES MATERIELS
--- =============================
-
--- CREATE TABLE Categorie (
---     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
---     NomCategorie VARCHAR(55) UNIQUE
--- );
-
-CREATE TABLE TypeMateriel (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomTypeMateriel VARCHAR(55) UNIQUE,
-    IdListMateriel INTEGER,
-    IdModele INTEGER,
-    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id),
-    FOREIGN KEY (IdModele) REFERENCES Modele(Id)
-);
-
--- CREATE TABLE NomMateriel (
---     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
---     NomMateriel VARCHAR(55) UNIQUE,
---     IdCategorie INTEGER,
---     FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id)
--- );
-
-CREATE TABLE Marque (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomMarque VARCHAR(25) UNIQUE
-);
-
-CREATE TABLE Modele (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomModele VARCHAR(65) UNIQUE,
-    IdMarque INTEGER,
-    -- IdCategorie INTEGER,
-    -- IdNomMateriel INTEGER,
-    FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
-    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
-    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id)
-);
-
-CREATE TABLE ListMateriel (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomMateriel VARCHAR(55),
-    Caracteristique VARCHAR(120),
-    Quantite INTEGER CHECK (MaterielQuantite > 0),
-    Garantie INTEGER CHECK (MaterielGarantie > 0),
-    PrixUnitaire DECIMAL(6,2) CHECK (PrixUnitaire > 0),
-    -- IdCategorie INTEGER,
-    -- IdNomMateriel INTEGER,
-    -- IdMarque INTEGER,
-    -- IdModele INTEGER,
-    -- IdFournisseur INTEGER,
-    IdListeMarche INTEGER,
-    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id),
-    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
-    -- FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
-    -- FOREIGN KEY (IdModele) REFERENCES Modele(Id),
-    -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
-    FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
 
 -- ==============================
