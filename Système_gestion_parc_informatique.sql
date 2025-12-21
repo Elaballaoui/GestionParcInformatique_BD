@@ -280,9 +280,9 @@ CREATE TABLE NumeroBureau (
     FOREIGN KEY (IdNumeroEtage) REFERENCES NumeroEtage(Id)
 );
 
--- ==============================
--- MODULE: MARCHES & FOURNISSEURS
--- ==============================
+-- ========================
+-- MODULE: GESTION MARCHES 
+-- ========================
 
 CREATE TABLE Fournisseur (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -308,8 +308,6 @@ CREATE TABLE Facture (
     MontantHT DECIMAL(8,2) CHECK (MontantHT > 0),
     TauxTVA INTEGER CHECK (TauxTVA >= 0),
     MontantTTC DECIMAL(8,2) CHECK (MontantTTC > 0),
-    -- IdFournisseur INTEGER,
     IdListeMarche INTEGER,
-    -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
     FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
 );
