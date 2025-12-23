@@ -157,37 +157,12 @@ CREATE TABLE Utilisateur (
 --     NomCategorie VARCHAR(55) UNIQUE
 -- );
 
-CREATE TABLE TypeMateriel (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomTypeMateriel VARCHAR(55) UNIQUE,
-    IdListMateriel INTEGER,
-    IdModele INTEGER,
-    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id),
-    FOREIGN KEY (IdModele) REFERENCES Modele(Id)
-);
-
 -- CREATE TABLE NomMateriel (
 --     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
 --     NomMateriel VARCHAR(55) UNIQUE,
 --     IdCategorie INTEGER,
 --     FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id)
 -- );
-
-CREATE TABLE Marque (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomMarque VARCHAR(25) UNIQUE
-);
-
-CREATE TABLE Modele (
-    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    NomModele VARCHAR(65) UNIQUE,
-    IdMarque INTEGER,
-    -- IdCategorie INTEGER,
-    -- IdNomMateriel INTEGER,
-    FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
-    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
-    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id)
-);
 
 CREATE TABLE ListMateriel (
     Id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -208,6 +183,31 @@ CREATE TABLE ListMateriel (
     -- FOREIGN KEY (IdModele) REFERENCES Modele(Id),
     -- FOREIGN KEY (IdFournisseur) REFERENCES Fournisseur(Id),
     FOREIGN KEY (IdListeMarche) REFERENCES ListeMarche(Id)
+);
+
+CREATE TABLE Marque (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomMarque VARCHAR(25) UNIQUE
+);
+
+CREATE TABLE Modele (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomModele VARCHAR(65) UNIQUE,
+    IdMarque INTEGER,
+    -- IdCategorie INTEGER,
+    -- IdNomMateriel INTEGER,
+    FOREIGN KEY (IdMarque) REFERENCES Marque(Id),
+    -- FOREIGN KEY (IdCategorie) REFERENCES Categorie(Id),
+    -- FOREIGN KEY (IdNomMateriel) REFERENCES NomMateriel(Id)
+);
+
+CREATE TABLE TypeMateriel (
+    Id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    NomTypeMateriel VARCHAR(55) UNIQUE,
+    IdListMateriel INTEGER,
+    IdModele INTEGER,
+    FOREIGN KEY (IdListMateriel) REFERENCES ListMateriel(Id),
+    FOREIGN KEY (IdModele) REFERENCES Modele(Id)
 );
 
 -- ==============================
